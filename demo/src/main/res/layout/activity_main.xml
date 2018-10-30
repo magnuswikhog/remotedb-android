@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".MainActivity">
+
+    <CheckBox
+        android:id="@+id/deleteStoredLocalEntriesCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete stored entries from local DB" />
+
+    <Button
+        android:id="@+id/insertRandomEntryButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Insert random entry" />
+
+    <Button
+        android:id="@+id/insertEmptyEntryButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Insert empty entry" />
+
+    <Button
+        android:id="@+id/insertOneHundredEntriesButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Insert 100 entries" />
+
+
+    <Button
+        android:id="@+id/sendToServerInOneThousandEntryChunksButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send to server in chunks of 1000 entries" />
+
+    <Button
+        android:id="@+id/sendToServerInOneHundredEntryChunksButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send to server in chunks of 100 entries" />
+
+    <Button
+        android:id="@+id/sendToServerInTenEntryChunksButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send to server in chunks of 10 entries" />
+
+    <Button
+        android:id="@+id/clearLocalDbButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Clear local DB" />
+
+    <TextView
+        android:id="@+id/allEntriesCountText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total local entries: ?"/>
+
+    <TextView
+        android:id="@+id/unstoredEntriesCountText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Unstored local entries: ?"/>
+
+    <TextView
+        android:id="@+id/serverEntriesCountText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total server entries: ?"/>
+
+
+</LinearLayout>
