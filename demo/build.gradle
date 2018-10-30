@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+group='com.github.magnuswikhog.remotedb-android'
+
 android {
     compileSdkVersion 28
     defaultConfig {
