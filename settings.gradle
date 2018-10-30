@@ -1,1 +1,1 @@
-include 'demo', 'remotedb'
+include ':demo', ':remotedb'
