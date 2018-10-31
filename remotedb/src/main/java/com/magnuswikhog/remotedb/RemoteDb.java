@@ -36,9 +36,14 @@ public class RemoteDb {
 	public static boolean DEBUG = false;
 
 
-
+    /**
+     * The callback interface used by the RemoteDb class.
+     */
 	public interface RemoteDbInterface{
-	    void onSendToServerSuccess();
+        /** Called when the server has acknowledged that it has successfully stored the sent entries. */
+        void onSendToServerSuccess();
+
+        /** Called if there was a problem when sending or storing the entrieson the server. */
 	    void onSendToServerFailure();
     }
 
@@ -66,8 +71,16 @@ public class RemoteDb {
     private MutableLiveData<Long> mServerEntryCount;
 
 
-
-
+    /**
+     * Creates a new RemoteDb instance.
+     *
+     * @param context       The context to use for this instance.
+     * @param filename      The filename of the local database. If you are using separate instances of this class to store different types of entries, make sure you use different names for the databases of each instance.
+     * @param storeUrl      The URL for the RemoteDb server script.
+     * @param password      The password to send to the RemoteDb server script.
+     * @param aInterface    An optional callback interface.
+     * @param deleteLocalEntriesAfterRemoteStoreSuccess     If true, entries will be removed from the local database when they have been successfully stored on the server. If false, the local entries will be kept in the local database even after they have been stored on the server.
+     */
     public RemoteDb(Context context, String filename, String storeUrl, String password, RemoteDbInterface aInterface, boolean deleteLocalEntriesAfterRemoteStoreSuccess){
         mContext = context.getApplicationContext();
         mStoreUrl = storeUrl;
@@ -82,8 +95,13 @@ public class RemoteDb {
     }
 
 
-
-
+    /**
+     * Adds a new entry to the local database. You must first add any data that you want to store to
+     * the entry, before calling this method. After calling this method, the entry is stored in the
+     * local database on the users device, but is not sent to the remote server until you call
+     * {@link com.magnuswikhog.remotedb.RemoteDb#sendToServer(boolean)}.
+     * @param entry The entry you want to store in the local database.
+     */
     public void addEntry(final Entry entry){
         AsyncTask.execute(new Runnable() {
             @Override
@@ -100,8 +118,14 @@ public class RemoteDb {
     }
 
 
-
-
+    /**
+     * Sends all entries in the database that have not yet been stored on the server, to the server.
+     * This is done asynchronously, and if you have set a {@link RemoteDbInterface}, the appropriate
+     * callback method will be invoked when the server responds.
+     * @param sendRequestEvenIfEmpty    It true, a HTTP request will be sent to the server even if
+     *                                  there are no entries to send. Useful for retrieving the number
+     *                                  of entries on the server in {@link RemoteDb#getServerEntriesCountLive()}.
+     */
     public synchronized void sendToServer(final boolean sendRequestEvenIfEmpty) {
         AsyncTask.execute(new Runnable() {
             @Override
@@ -220,8 +244,12 @@ public class RemoteDb {
     };
 
 
-
-
+    /**
+     * Marks the entries with the supplied UUID's in the local database as "stored on the server".
+     * @param uuids A list of UUID's, one for each entry to mark as stored.
+     * @param deleteEntries If true, all entries that are marked as stored (not only the ones supplied
+     *                      in the uuids parameter) will be deleted from the local database.
+     */
     public void markEntriesAsStored(final JSONArray uuids, final boolean deleteEntries){
         if( null != uuids ) {
             AsyncTask.execute(new Runnable() {
@@ -263,7 +291,9 @@ public class RemoteDb {
     }
 
 
-
+    /**
+     * Removes all entries that are marked as "stored on the server" from the local database.
+     */
     public void removeStoredEntries(){
         AsyncTask.execute(new Runnable() {
             @Override
@@ -284,7 +314,9 @@ public class RemoteDb {
     }
 
 
-
+    /**
+     * Removes all entries from the local database, regardless of if they have been stored on the server or not.
+     */
     public void clearLocalDatabase(){
         AsyncTask.execute(new Runnable() {
             @Override
@@ -305,27 +337,41 @@ public class RemoteDb {
     }
 
 
-
-
+    /**
+     * Returns a LiveData object representing the total number of entries in the local database.
+     * @return A LiveData object which can be used to observe this property.
+     */
     public LiveData<Long> getLocalEntriesCountLive(){
         return mDb.getLocalEntryDao().countAllEntriesLive();
     }
 
+
+    /**
+     * Returns a LiveData object representing the number of entries in the local database which have
+     * not yet been stored on the server.
+     * @return A LiveData object which can be used to observe this property.
+     */
     public LiveData<Long> getUnstoredLocalEntriesCountLive(){
         return mDb.getLocalEntryDao().countEntriesNotStoredOnServerLive();
     }
 
+
+    /**
+     * Returns a LiveData object representing the number of entries in the remote server database.
+     * Note that this number is only updated when you call {@link RemoteDb#sendToServer(boolean)}.
+     * @return A LiveData object which can be used to observe this property.
+     */
     public MutableLiveData<Long> getServerEntriesCountLive(){
         return mServerEntryCount;
     }
 
 
-
-
-
-
-
-
+    /**
+     * @param deleteLocalEntriesAfterRemoteStoreSuccess If true, all entries that have been stored on the
+     *                                                  server will be removed the next time a call to
+     *                                                  {@link RemoteDb#sendToServer(boolean)} is
+     *                                                  successful.
+     */
     public void setDeleteLocalEntriesAfterRemoteStoreSuccess(boolean deleteLocalEntriesAfterRemoteStoreSuccess) {
         mDeleteLocalEntriesAfterRemoteStoreSuccess = deleteLocalEntriesAfterRemoteStoreSuccess;
     }
@@ -339,6 +385,15 @@ public class RemoteDb {
         return mRequestParams;
     }
 
+
+    /**
+     * Sets an entry that will be supplied with each request to the remote server. This can be used to
+     * supply data that should be stored along with each sent entry, but which is common for all entries.
+     * It's much more efficient to provide such static data this way than to supply it within each entry,
+     * since it will result in a smaller and faster HTTP request.
+     * @param requestParams An entry containing data that will be supplied with each HTTP request to the
+     *                      server.
+     */
     public void setRequestParams(Entry requestParams) {
         mRequestParams = requestParams;
     }
