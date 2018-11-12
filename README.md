@@ -36,7 +36,7 @@ Where `x.x.x` is the latest release version number, which can be found at [the r
     RemoteDb remoteDb = new RemoteDb(
             getApplicationContext(),
             "demodatabase.db",
-            "http://example.com/remotedb-php/store.php",
+            "https://example.com/remotedb-php/store.php",
             "demopassword",
             new RemoteDb.RemoteDbInterface() {
                 @Override
